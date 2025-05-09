@@ -1,8 +1,7 @@
-import { Injectable, UseFilters } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Post, Prisma } from 'generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 
-@UseFilters()
 @Injectable()
 export class PostService {
 	constructor(private readonly prismaService: PrismaService) {}
