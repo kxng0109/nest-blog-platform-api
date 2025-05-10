@@ -1,8 +1,8 @@
 import {
-	BadRequestException,
-	Injectable,
-	InternalServerErrorException,
-	UnauthorizedException,
+    BadRequestException,
+    Injectable,
+    InternalServerErrorException,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
@@ -78,8 +78,4 @@ export class AuthService {
 		const access_token = await this.jwtService.signAsync(payload);
 		return { access_token };
 	}
-
-	// private async verifyJwt(){
-	// 	return await this.jwtService.verifyAsync(token)
-	// }
 }

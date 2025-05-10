@@ -9,22 +9,23 @@ import {
     ParseIntPipe,
     Patch,
     Post,
-    UseFilters,
-    UseGuards,
+    UseGuards
 } from '@nestjs/common';
-import { Post as PostModel } from 'generated/prisma';
+import { Comment as CommentModel, Post as PostModel } from 'generated/prisma';
 import { User } from 'src/auth/decorator/user.decorator';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { PostOwnerOrAdminGuard } from 'src/auth/guards/post-owner-or-admin.guard';
-import { PrismaClientExceptionFilter } from 'src/PrismaClientException.filter';
+import { JwtAuthGuard, PostOwnerOrAdminGuard } from 'src/auth/guards/';
+import { CommentsService } from 'src/comments/comments.service';
+import { CreateCommentDto } from 'src/comments/dto/';
 import { CreatePostDto, UpdatePostDto } from './dto';
 import { PostService } from './post.service';
 
-@UseFilters(PrismaClientExceptionFilter)
 @UseGuards(JwtAuthGuard)
-@Controller('post')
+@Controller('posts')
 export class PostController {
-	constructor(private readonly postService: PostService) {}
+	constructor(
+		private readonly postService: PostService,
+		private readonly commentsService: CommentsService,
+	) {}
 
 	@Post()
 	async createPost(
@@ -34,6 +35,27 @@ export class PostController {
 		return await this.postService.createPost({
 			...postDto,
 			author: { connect: { id: authorId } },
+		});
+	}
+
+	@Post(':id/comments')
+	async createComment(
+		@User('id') userId: number,
+		@Param('id', ParseIntPipe) id: number,
+		@Body() createCommentDto: CreateCommentDto,
+	): Promise<CommentModel> {
+		return await this.commentsService.createComment({
+			...createCommentDto,
+			post: {
+				connect: {
+					id,
+				},
+			},
+			author: {
+				connect: {
+					id: userId,
+				},
+			},
 		});
 	}
 
@@ -47,6 +69,13 @@ export class PostController {
 		@Param('id', ParseIntPipe) id: number,
 	): Promise<PostModel | null> {
 		return await this.postService.getPost({ id });
+	}
+
+	@Get(':id/comments')
+	async getAllPostComments(
+		@Param('id', ParseIntPipe) id: number,
+	): Promise<CommentModel[] | null> {
+		return await this.commentsService.getAllPostComments(id);
 	}
 
 	@UseGuards(PostOwnerOrAdminGuard)
@@ -66,8 +95,8 @@ export class PostController {
 
 	@UseGuards(PostOwnerOrAdminGuard)
 	@HttpCode(HttpStatus.NO_CONTENT)
-	@Delete(":id")
-	async deletePost(@Param("id", ParseIntPipe) id:number){
-		return await this.postService.deletePost(id)
+	@Delete(':id')
+	async deletePost(@Param('id', ParseIntPipe) id: number) {
+		return await this.postService.deletePost(id);
 	}
 }
