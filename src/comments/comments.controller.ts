@@ -2,18 +2,20 @@ import {
     Body,
     Controller,
     Delete,
+    HttpCode,
+    HttpStatus,
     Param,
     ParseIntPipe,
     Patch,
     UseGuards
 } from '@nestjs/common';
 import { Comment as CommentModel } from 'generated/prisma';
-import { User } from 'src/auth/decorator/user.decorator';
+import { User } from 'src/auth/decorator';
 import { CommentOwnerOrAdminGuard, JwtAuthGuard } from 'src/auth/guards';
 import { CommentsService } from './comments.service';
 import { UpdateCommentDto } from './dto/';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, CommentOwnerOrAdminGuard)
 @Controller('comments')
 export class CommentsController {
 	constructor(private readonly commentsService: CommentsService) {}
@@ -31,7 +33,7 @@ export class CommentsController {
 		});
 	}
 
-	@UseGuards(CommentOwnerOrAdminGuard) //Admins and the person who made it only
+	@HttpCode(HttpStatus.NO_CONTENT)
 	@Delete(':id')
 	async deleteComment(
 		@User('id') userId: number,

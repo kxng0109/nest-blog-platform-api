@@ -4,10 +4,10 @@ import * as Joi from 'joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { PrismaModule } from './prisma/prisma.module';
-import { UserModule } from './user/user.module';
-import { PostModule } from './post/post.module';
 import { CommentsModule } from './comments/comments.module';
+import { PostModule } from './post/post.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -22,9 +22,9 @@ import { CommentsModule } from './comments/comments.module';
     }),
     PrismaModule,
     AuthModule,
-    UserModule,
     PostModule,
     CommentsModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

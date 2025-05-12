@@ -1,10 +1,11 @@
 import {
-    CanActivate,
-    ExecutionContext,
-    Injectable,
-    NotFoundException,
-    UnauthorizedException,
+	CanActivate,
+	ExecutionContext,
+	Injectable,
+	NotFoundException,
+	UnauthorizedException,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -15,7 +16,7 @@ export class PostOwnerOrAdminGuard implements CanActivate {
 	canActivate(
 		context: ExecutionContext,
 	): boolean | Promise<boolean> | Observable<boolean> {
-		const req = context.switchToHttp().getRequest();
+		const req = context.switchToHttp().getRequest<Request>();
 		return this.validateRequest(req);
 	}
 
@@ -27,6 +28,11 @@ export class PostOwnerOrAdminGuard implements CanActivate {
 		const { role, id: userID } = user;
 		if (!role && !userID) {
 			return false;
+		}
+
+		//If a user wants to delete all their posts
+		if (req.method === "DELETE" && req.path === "/api/posts/"){
+			return true;
 		}
 
 		const post = await this.prismaService.post.findUnique({
