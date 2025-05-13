@@ -7,11 +7,12 @@ import {
     Param,
     ParseIntPipe,
     Patch,
-    UseGuards
+    UseGuards,
 } from '@nestjs/common';
 import { Comment as CommentModel } from 'generated/prisma';
 import { User } from 'src/auth/decorator';
 import { CommentOwnerOrAdminGuard, JwtAuthGuard } from 'src/auth/guards';
+import { RoleType } from 'src/type';
 import { CommentsService } from './comments.service';
 import { UpdateCommentDto } from './dto/';
 
@@ -23,6 +24,7 @@ export class CommentsController {
 	@Patch(':id')
 	async editComment(
 		@User('id') userId: number,
+		@User('role') role: RoleType,
 		@Param('id', ParseIntPipe) id: number,
 		@Body() updateCommentDto: UpdateCommentDto,
 	): Promise<CommentModel> {
@@ -30,6 +32,7 @@ export class CommentsController {
 			id,
 			userId,
 			data: updateCommentDto,
+			role,
 		});
 	}
 
@@ -37,11 +40,13 @@ export class CommentsController {
 	@Delete(':id')
 	async deleteComment(
 		@User('id') userId: number,
+		@User('role') role: RoleType,
 		@Param('id', ParseIntPipe) id: number,
 	) {
 		return await this.commentsService.deleteComment({
 			userId,
-			id
+			id,
+			role,
 		});
 	}
 }

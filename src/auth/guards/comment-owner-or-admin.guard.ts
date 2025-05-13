@@ -8,6 +8,7 @@ import {
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { RoleType } from 'src/type';
 
 @Injectable()
 export class CommentOwnerOrAdminGuard implements CanActivate {
@@ -20,7 +21,7 @@ export class CommentOwnerOrAdminGuard implements CanActivate {
 	}
 
 	async validate(req): Promise<boolean> {
-		const user = req.user as {role: 'ADMIN' | 'USER'; id: number} | undefined;
+		const user = req.user as {role: RoleType; id: number} | undefined;
 		if (!user) throw new UnauthorizedException();
 
 		const commentId: number = Number(req.params.id);
