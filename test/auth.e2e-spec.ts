@@ -13,6 +13,11 @@ describe('Authenticate user', () => {
 		await initApp();
 	});
 
+	beforeEach(async () => {
+		//To avoid 429 error from Throttler
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+	});
+
 	afterAll(async () => {
 		await closeApp();
 	});

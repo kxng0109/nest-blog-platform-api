@@ -12,6 +12,7 @@ import {
     Query,
     UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { Comment as CommentModel, Post as PostModel } from 'generated/prisma';
 import { User } from 'src/auth/decorator';
 import { JwtAuthGuard, PostOwnerOrAdminGuard } from 'src/auth/guards/';
@@ -64,13 +65,12 @@ export class PostController {
 
 	//Get all posts from every user or a particular user
 	@Get()
-	async getAllPosts(
-		@Query() query: PaginationFilterDto,
-	): Promise<PostModel[]> {
+	async getAllPosts(@Query() query: PaginationFilterDto): Promise<PostModel[]> {
 		return await this.postService.getAllPosts(query);
 	}
 
 	//Get a post by its id
+	@Throttle({short: {ttl: 3000, limit: 5}})
 	@Get(':id')
 	async getPost(
 		@Param('id', ParseIntPipe) id: number,
