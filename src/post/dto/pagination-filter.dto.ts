@@ -1,10 +1,11 @@
 import {
-	IsIn,
-	IsInt,
-	IsOptional,
-	IsString,
-	Max,
-	Min
+    IsBoolean,
+    IsIn,
+    IsInt,
+    IsOptional,
+    IsString,
+    Max,
+    Min
 } from 'class-validator';
 
 export class PaginationFilterDto {
@@ -31,4 +32,8 @@ export class PaginationFilterDto {
 	@IsOptional()
 	@Min(1)
 	authorId?: number;
+
+	@IsBoolean()
+	@IsOptional()
+	published?: boolean;
 }
