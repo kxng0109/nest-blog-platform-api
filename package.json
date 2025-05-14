@@ -8,6 +8,10 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "db:start": "docker compose up -d",
+    "db:stop": "docker compose down",
+    "db:reset": "docker compose down -v",
+    "db:restart": "npm run db:stop && timeout 1 && npm run db:start",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",

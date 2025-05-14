@@ -3,8 +3,6 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import * as Joi from 'joi';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CommentsModule } from './comments/comments.module';
 import { PostModule } from './post/post.module';
@@ -42,10 +40,11 @@ import { UsersModule } from './users/users.module';
     CommentsModule,
     UsersModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, {
-    provide: APP_GUARD,
-    useClass: ThrottlerGuard
-  }],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

@@ -28,7 +28,7 @@ export class CommentsController {
 		@Param('id', ParseIntPipe) id: number,
 		@Body() updateCommentDto: UpdateCommentDto,
 	): Promise<CommentModel> {
-		return await this.commentsService.editComment({
+		return this.commentsService.editComment({
 			id,
 			userId,
 			data: updateCommentDto,
@@ -43,7 +43,7 @@ export class CommentsController {
 		@User('role') role: RoleType,
 		@Param('id', ParseIntPipe) id: number,
 	) {
-		return await this.commentsService.deleteComment({
+		return this.commentsService.deleteComment({
 			userId,
 			id,
 			role,

@@ -35,7 +35,7 @@ export class PostController {
 		@Body() postDto: CreatePostDto,
 		@User('id') authorId: number,
 	): Promise<PostModel> {
-		return await this.postService.createPost({
+		return this.postService.createPost({
 			...postDto,
 			author: { connect: { id: authorId } },
 		});
@@ -48,7 +48,7 @@ export class PostController {
 		@Param('id', ParseIntPipe) id: number,
 		@Body() createCommentDto: CreateCommentDto,
 	): Promise<CommentModel> {
-		return await this.commentsService.createComment({
+		return this.commentsService.createComment({
 			...createCommentDto,
 			post: {
 				connect: {
@@ -66,7 +66,7 @@ export class PostController {
 	//Get all posts from every user or a particular user
 	@Get()
 	async getAllPosts(@Query() query: PaginationFilterDto): Promise<PostModel[]> {
-		return await this.postService.getAllPosts(query);
+		return this.postService.getAllPosts(query);
 	}
 
 	//Get a post by its id
@@ -75,7 +75,7 @@ export class PostController {
 	async getPost(
 		@Param('id', ParseIntPipe) id: number,
 	): Promise<PostModel | null> {
-		return await this.postService.getPost({ id });
+		return this.postService.getPost({ id });
 	}
 
 	//Get all the comments under a post
@@ -83,7 +83,7 @@ export class PostController {
 	async getAllPostComments(
 		@Param('id', ParseIntPipe) id: number,
 	): Promise<CommentModel[] | null> {
-		return await this.commentsService.getAllPostComments(id);
+		return this.commentsService.getAllPostComments(id);
 	}
 
 	//Update a post
@@ -93,7 +93,7 @@ export class PostController {
 		@Param('id', ParseIntPipe) id: number,
 		@Body() updatePostDto: UpdatePostDto,
 	): Promise<PostModel | null> {
-		return await this.postService.updatePost({ id }, updatePostDto);
+		return this.postService.updatePost({ id }, updatePostDto);
 	}
 
 	//Delete all posts from the user
@@ -101,7 +101,7 @@ export class PostController {
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@Delete()
 	async deleteAllPosts(@User('id') authorId: number) {
-		return await this.postService.deleteAllPosts(authorId);
+		return this.postService.deleteAllPosts(authorId);
 	}
 
 	//Delete a post of id, "id"
@@ -109,6 +109,6 @@ export class PostController {
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@Delete(':id')
 	async deletePost(@Param('id', ParseIntPipe) id: number) {
-		return await this.postService.deletePost(id);
+		return this.postService.deletePost(id);
 	}
 }
